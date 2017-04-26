@@ -16,6 +16,16 @@ namespace Trajectories
                 Settings.fetch.AlwaysUpdate = value;
             }
         }
+        public static double? getEndTime()
+        {
+            foreach (var patch in Trajectory.fetch.patches)
+            {
+                if (patch.endTime2 != null)
+                    return patch.endTime2;
+            }
+            return null;
+        }
+        
 
         public static Vector3? getImpactPosition()
         {

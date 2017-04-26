@@ -63,7 +63,9 @@ namespace Trajectories
         public class Patch
         {
             public VesselState startingState { get; set; }
-            public double endTime { get; set; }
+            private double _endTime;
+            public double endTime { get { return _endTime; } set { endTime2 = value; _endTime = value; } }
+            public double? endTime2 { get;  set; }
             public bool isAtmospheric { get; set; }
             public Point[] atmosphericTrajectory { get; set; } // position array in body space (world frame centered on the body) ; only used when isAtmospheric is true
             public Orbit spaceOrbit { get; set; } // only used when isAtmospheric is false
