@@ -1,9 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Trajectories", "Plugin\Trajectories.csproj", "{34928415-4627-4BAD-ABC6-CB5677691E95}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF} = {1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Telemetry", "KSPTelemetry\Telemetry\Telemetry.csproj", "{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,14 +24,26 @@ Global
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|x86.ActiveCfg = Release|Any CPU
-		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|x86.Build.0 = Release|Any CPU
+		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{34928415-4627-4BAD-ABC6-CB5677691E95}.Debug|x86.Build.0 = Debug|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|Any CPU.Build.0 = Release|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|x86.ActiveCfg = Release|Any CPU
 		{34928415-4627-4BAD-ABC6-CB5677691E95}.Release|x86.Build.0 = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Debug|x86.Build.0 = Debug|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|x86.ActiveCfg = Release|Any CPU
+		{1A8C3C09-3055-4C86-A50B-E6F9218AD4BF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
