@@ -1,0 +1,3 @@
+[submodule "KSPTelemetry"]
+	path = KSPTelemetry
+	url = https://github.com/fat-lobyte/KSPTelemetry
