@@ -11,6 +11,10 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
+#if DEBUG_TELEMETRY
+using Telemetry;
+#endif
+
 namespace Trajectories
 {
     // this class handles trajectory prediction (performing a lightweight physical simulation to predict a vessel trajectory in space and atmosphere)
@@ -165,6 +169,24 @@ namespace Trajectories
             aerodynamicModel_.Invalidate();
         }
 
+#if DEBUG && DEBUG_TELEMETRY
+
+        public void Awake()
+        {
+            // Add telemetry channels for real and predicted variable values
+            TelemetryService.Instance.AddChannel("airspeed", typeof(double));
+            TelemetryService.Instance.AddChannel("aoa", typeof(double));
+            TelemetryService.Instance.AddChannel("drag", typeof(double));
+
+            TelemetryService.Instance.AddChannel("density", typeof(double));
+            TelemetryService.Instance.AddChannel("density_calc", typeof(double));
+            TelemetryService.Instance.AddChannel("density_calc_precise", typeof(double));
+
+            TelemetryService.Instance.AddChannel("temperature", typeof(double));
+            TelemetryService.Instance.AddChannel("temperature_calc", typeof(double));
+        }
+#endif
+
         public void Start()
         {
             fetch_ = this;
@@ -199,10 +221,10 @@ namespace Trajectories
             }
 
             if (HighLogic.LoadedScene == GameScenes.FLIGHT
-                && FlightGlobals.ActiveVessel != null 
-                && FlightGlobals.ActiveVessel.Parts.Count != 0 
-                && ((Settings.fetch.DisplayTrajectories) 
-                    || Settings.fetch.AlwaysUpdate 
+                && FlightGlobals.ActiveVessel != null
+                && FlightGlobals.ActiveVessel.Parts.Count != 0
+                && ((Settings.fetch.DisplayTrajectories)
+                    || Settings.fetch.AlwaysUpdate
                     || targetPosition_.HasValue))
             {
                 ComputeTrajectory(FlightGlobals.ActiveVessel, DescentProfile.fetch, true);
@@ -757,7 +779,7 @@ namespace Trajectories
                     double altitudeAboveSea = bodySpacePosition.magnitude - body.Radius;
 
                     Vector3d airVelocity = bodySpaceVelocity - body.getRFrmVel(body.position + bodySpacePosition);
-        
+
                     double R = PreviousFramePos.magnitude;
                     Vector3d gravityForce = PreviousFramePos * (-body.gravParameter / (R * R * R) * vessel_.totalMass);
 
@@ -789,7 +811,9 @@ namespace Trajectories
                     Vector3d localPredictedForce = new Vector3d(Vector3d.Dot(predictedForce, vesselRight), Vector3d.Dot(predictedForce, vesselUp), Vector3d.Dot(predictedForce, vesselBackward));
                     Vector3d localPredictedForceWithCache = new Vector3d(Vector3d.Dot(predictedForceWithCache, vesselRight), Vector3d.Dot(predictedForceWithCache, vesselUp), Vector3d.Dot(predictedForceWithCache, vesselBackward));
 
-                    Util.PostSingleScreenMessage("actual/predict comparison", "air vel=" + Math.Floor(airVelocity.magnitude) + " ; AoA=" + (AoA * 180.0 / Math.PI));
+                    TelemetryService.Instance.Send("airspeed", Math.Floor(airVelocity.magnitude));
+                    TelemetryService.Instance.Send("aoa", (AoA * 180.0 / Math.PI));
+
                     //Util.PostSingleScreenMessage("total force", "actual total force=" + localTotalForce.ToString("0.000"));
                     Util.PostSingleScreenMessage("actual force", "actual force=" + localActualForce.ToString("0.000"));
                     Util.PostSingleScreenMessage("predicted force", "predicted force=" + localPredictedForce.ToString("0.000"));
@@ -800,35 +824,16 @@ namespace Trajectories
                     Util.PostSingleScreenMessage("current vel", "current vel=" + bodySpaceVelocity.ToString("0.00") + " (mag=" + bodySpaceVelocity.magnitude.ToString("0.00") + ")");
                     //Util.PostSingleScreenMessage("vel from pos", "vel from pos=" + ((bodySpacePosition - PreviousFramePos) / dt).ToString("0.000") + " (mag=" + ((bodySpacePosition - PreviousFramePos) / dt).magnitude.ToString("0.00") + ")");
                     Util.PostSingleScreenMessage("force diff", "force ratio=" + (localActualForce.z / localPredictedForce.z).ToString("0.000"));
-                    Util.PostSingleScreenMessage("drag", "physics drag=" + vessel_.rootPart.rb.drag);
 
 
-                    double approximateRho = StockAeroUtil.GetDensity(altitudeAboveSea, body);
-                    double preciseRho = StockAeroUtil.GetDensity(vessel_.GetWorldPos3D(), body);
-                    double actualRho = vessel_.atmDensity;
+                    TelemetryService.Instance.Send("drag", vessel_.rootPart.rb.drag);
 
-                    Util.PostSingleScreenMessage("rho_actual", "rho_actual = " + actualRho.ToString("e3"));
+                    TelemetryService.Instance.Send("density", vessel_.atmDensity);
+                    TelemetryService.Instance.Send("density_calc", StockAeroUtil.GetDensity(altitudeAboveSea, body));
+                    TelemetryService.Instance.Send("density_calc_precise", StockAeroUtil.GetDensity(vessel_.GetWorldPos3D(), body));
 
-                    Util.PostSingleScreenMessage("rho_approx",
-                        "rho_approx=" + approximateRho.ToString("e3")
-                        + "; ratio=" + (actualRho / approximateRho).ToString("0.000")
-                        + "; ratio_diff=" + (1.0d - actualRho / approximateRho).ToString("e3")
-                        );
-
-                    Util.PostSingleScreenMessage("rho_precise",
-                        "rho_prec=" + preciseRho.ToString("e3")
-                        + "; ratio=" + (actualRho / preciseRho).ToString("0.000")
-                        + "; ratio_diff=" + (1.0d - actualRho / preciseRho).ToString("e3"));
-
-                    double calcTemp = StockAeroUtil.GetTemperature(vessel_.GetWorldPos3D(), body);
-                    double actualTemp = vessel_.atmosphericTemperature;
-
-                    Util.PostSingleScreenMessage("temp info",
-                        "calcTemp=" + calcTemp.ToString("0.000")
-                        + " ; actualTemp=" + actualTemp.ToString("0.0000")
-                        + " ; ratio=" + (actualTemp / calcTemp).ToString("0.00")
-                        + " ; ratio_diff=" + (1.0d - actualTemp / calcTemp).ToString("e3"));
-
+                    TelemetryService.Instance.Send("temperature", vessel_.atmosphericTemperature);
+                    TelemetryService.Instance.Send("temperature_calc", StockAeroUtil.GetTemperature(vessel_.GetWorldPos3D(), body));
                 }
 
                 PreviousFrameVelocity = bodySpaceVelocity;
