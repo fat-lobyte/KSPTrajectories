@@ -11,10 +11,6 @@ using System.Diagnostics;
 using System.Linq;
 using UnityEngine;
 
-#if DEBUG_TELEMETRY
-using Telemetry;
-#endif
-
 namespace Trajectories
 {
     // this class handles trajectory prediction (performing a lightweight physical simulation to predict a vessel trajectory in space and atmosphere)
@@ -174,22 +170,22 @@ namespace Trajectories
         public void Awake()
         {
             // Add telemetry channels for real and predicted variable values
-            TelemetryService.Instance.AddChannel<double>("airspeed");
-            TelemetryService.Instance.AddChannel<double>("aoa");
-            TelemetryService.Instance.AddChannel<float>("drag");
+            Telemetry.AddChannel<double>("airspeed");
+            Telemetry.AddChannel<double>("aoa");
+            Telemetry.AddChannel<float>("drag");
 
-            TelemetryService.Instance.AddChannel<double>("density");
-            TelemetryService.Instance.AddChannel<double>("density_calc");
-            TelemetryService.Instance.AddChannel<double>("density_calc_precise");
+            Telemetry.AddChannel<double>("density");
+            Telemetry.AddChannel<double>("density_calc");
+            Telemetry.AddChannel<double>("density_calc_precise");
 
-            TelemetryService.Instance.AddChannel<double>("temperature");
-            TelemetryService.Instance.AddChannel<double>("temperature_calc");
+            Telemetry.AddChannel<double>("temperature");
+            Telemetry.AddChannel<double>("temperature_calc");
 
-            TelemetryService.Instance.AddChannel<double>("force_actual");
-            //TelemetryService.Instance.AddChannel<double>("force_total");
-            TelemetryService.Instance.AddChannel<double>("force_predicted");
-            TelemetryService.Instance.AddChannel<double>("force_predicted_cache");
-            //TelemetryService.Instance.AddChannel<double>("force_reference");
+            Telemetry.AddChannel<double>("force_actual");
+            //Telemetry.AddChannel<double>("force_total");
+            Telemetry.AddChannel<double>("force_predicted");
+            Telemetry.AddChannel<double>("force_predicted_cache");
+            //Telemetry.AddChannel<double>("force_reference");
         }
 #endif
 
@@ -816,52 +812,52 @@ namespace Trajectories
                     Vector3d localPredictedForce = new Vector3d(Vector3d.Dot(predictedForce, vesselRight), Vector3d.Dot(predictedForce, vesselUp), Vector3d.Dot(predictedForce, vesselBackward));
                     Vector3d localPredictedForceWithCache = new Vector3d(Vector3d.Dot(predictedForceWithCache, vesselRight), Vector3d.Dot(predictedForceWithCache, vesselUp), Vector3d.Dot(predictedForceWithCache, vesselBackward));
 
-                    TelemetryService.Instance.Send("airspeed", Math.Floor(airVelocity.magnitude));
-                    TelemetryService.Instance.Send("aoa", (AoA * 180.0 / Math.PI));
+                    Telemetry.Send("airspeed", Math.Floor(airVelocity.magnitude));
+                    Telemetry.Send("aoa", (AoA * 180.0 / Math.PI));
 
-                    TelemetryService.Instance.Send("force_actual", localActualForce.magnitude);
-                    //TelemetryService.Instance.Send("force_actual.x", localActualForce.x);
-                    //TelemetryService.Instance.Send("force_actual.y", localActualForce.y);
-                    //TelemetryService.Instance.Send("force_actual.z", localActualForce.z);
+                    Telemetry.Send("force_actual", localActualForce.magnitude);
+                    //Telemetry.Send("force_actual.x", localActualForce.x);
+                    //Telemetry.Send("force_actual.y", localActualForce.y);
+                    //Telemetry.Send("force_actual.z", localActualForce.z);
 
 
-                    TelemetryService.Instance.Send("force_total", localTotalForce.magnitude);
-                    //TelemetryService.Instance.Send("force_total.x", localTotalForce.x);
-                    //TelemetryService.Instance.Send("force_total.y", localTotalForce.y);
-                    //TelemetryService.Instance.Send("force_total.z", localTotalForce.z);
+                    Telemetry.Send("force_total", localTotalForce.magnitude);
+                    //Telemetry.Send("force_total.x", localTotalForce.x);
+                    //Telemetry.Send("force_total.y", localTotalForce.y);
+                    //Telemetry.Send("force_total.z", localTotalForce.z);
 
-                    TelemetryService.Instance.Send("force_predicted", localPredictedForce.magnitude);
-                    //TelemetryService.Instance.Send("force_predicted.x", localPredictedForce.x);
-                    //TelemetryService.Instance.Send("force_predicted.y", localPredictedForce.y);
-                    //TelemetryService.Instance.Send("force_predicted.z", localPredictedForce.z);
+                    Telemetry.Send("force_predicted", localPredictedForce.magnitude);
+                    //Telemetry.Send("force_predicted.x", localPredictedForce.x);
+                    //Telemetry.Send("force_predicted.y", localPredictedForce.y);
+                    //Telemetry.Send("force_predicted.z", localPredictedForce.z);
 
-                    TelemetryService.Instance.Send("force_predicted_cache", localPredictedForceWithCache.magnitude);
-                    //TelemetryService.Instance.Send("force_predicted_cache.x", localPredictedForceWithCache.x);
-                    //TelemetryService.Instance.Send("force_predicted_cache.y", localPredictedForceWithCache.y);
-                    //TelemetryService.Instance.Send("force_predicted_cache.z", localPredictedForceWithCache.z);
-                    
-                    //TelemetryService.Instance.Send("force_reference", referenceForce.magnitude);
-                    //TelemetryService.Instance.Send("force_reference.x", referenceForce.x);
-                    //TelemetryService.Instance.Send("force_reference.y", referenceForce.y);
-                    //TelemetryService.Instance.Send("force_reference.z", referenceForce.z);
+                    Telemetry.Send("force_predicted_cache", localPredictedForceWithCache.magnitude);
+                    //Telemetry.Send("force_predicted_cache.x", localPredictedForceWithCache.x);
+                    //Telemetry.Send("force_predicted_cache.y", localPredictedForceWithCache.y);
+                    //Telemetry.Send("force_predicted_cache.z", localPredictedForceWithCache.z);
 
-                    //TelemetryService.Instance.Send("velocity.x", bodySpaceVelocity.x);
-                    //TelemetryService.Instance.Send("velocity.y", bodySpaceVelocity.y);
-                    //TelemetryService.Instance.Send("velocity.z", bodySpaceVelocity.z);
+                    //Telemetry.Send("force_reference", referenceForce.magnitude);
+                    //Telemetry.Send("force_reference.x", referenceForce.x);
+                    //Telemetry.Send("force_reference.y", referenceForce.y);
+                    //Telemetry.Send("force_reference.z", referenceForce.z);
+
+                    //Telemetry.Send("velocity.x", bodySpaceVelocity.x);
+                    //Telemetry.Send("velocity.y", bodySpaceVelocity.y);
+                    //Telemetry.Send("velocity.z", bodySpaceVelocity.z);
 
                     //Vector3d velocity_pos = (bodySpacePosition - PreviousFramePos) / dt;
-                    //TelemetryService.Instance.Send("velocity_pos.x", velocity_pos.x);
-                    //TelemetryService.Instance.Send("velocity_pos.y", velocity_pos.y);
-                    //TelemetryService.Instance.Send("velocity_pos.z", velocity_pos.z);
+                    //Telemetry.Send("velocity_pos.x", velocity_pos.x);
+                    //Telemetry.Send("velocity_pos.y", velocity_pos.y);
+                    //Telemetry.Send("velocity_pos.z", velocity_pos.z);
 
-                    TelemetryService.Instance.Send("drag", vessel_.rootPart.rb.drag);
+                    Telemetry.Send("drag", vessel_.rootPart.rb.drag);
 
-                    TelemetryService.Instance.Send("density", vessel_.atmDensity);
-                    TelemetryService.Instance.Send("density_calc", StockAeroUtil.GetDensity(altitudeAboveSea, body));
-                    TelemetryService.Instance.Send("density_calc_precise", StockAeroUtil.GetDensity(vessel_.GetWorldPos3D(), body));
+                    Telemetry.Send("density", vessel_.atmDensity);
+                    Telemetry.Send("density_calc", StockAeroUtil.GetDensity(altitudeAboveSea, body));
+                    Telemetry.Send("density_calc_precise", StockAeroUtil.GetDensity(vessel_.GetWorldPos3D(), body));
 
-                    TelemetryService.Instance.Send("temperature", vessel_.atmosphericTemperature);
-                    TelemetryService.Instance.Send("temperature_calc", StockAeroUtil.GetTemperature(vessel_.GetWorldPos3D(), body));
+                    Telemetry.Send("temperature", vessel_.atmosphericTemperature);
+                    Telemetry.Send("temperature_calc", StockAeroUtil.GetTemperature(vessel_.GetWorldPos3D(), body));
                 }
 
                 PreviousFrameVelocity = bodySpaceVelocity;
