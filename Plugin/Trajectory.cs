@@ -174,16 +174,16 @@ namespace Trajectories
         public void Awake()
         {
             // Add telemetry channels for real and predicted variable values
-            TelemetryService.Instance.AddChannel("airspeed", typeof(double));
-            TelemetryService.Instance.AddChannel("aoa", typeof(double));
-            TelemetryService.Instance.AddChannel("drag", typeof(double));
+            TelemetryService.Instance.AddChannel<double>("airspeed");
+            TelemetryService.Instance.AddChannel<double>("aoa");
+            TelemetryService.Instance.AddChannel<float>("drag");
 
-            TelemetryService.Instance.AddChannel("density", typeof(double));
-            TelemetryService.Instance.AddChannel("density_calc", typeof(double));
-            TelemetryService.Instance.AddChannel("density_calc_precise", typeof(double));
+            TelemetryService.Instance.AddChannel<double>("density");
+            TelemetryService.Instance.AddChannel<double>("density_calc");
+            TelemetryService.Instance.AddChannel<double>("density_calc_precise");
 
-            TelemetryService.Instance.AddChannel("temperature", typeof(double));
-            TelemetryService.Instance.AddChannel("temperature_calc", typeof(double));
+            TelemetryService.Instance.AddChannel<double>("temperature");
+            TelemetryService.Instance.AddChannel<double>("temperature_calc");
         }
 #endif
 
