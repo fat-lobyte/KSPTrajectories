@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Vectrosity;
 
 namespace Trajectories
 {
@@ -85,6 +86,46 @@ namespace Trajectories
     {
         public List<Vector3d> Vertices = new List<Vector3d>();
         public CelestialBody Body = null;
+
+        private List<Vector2> vl_Vertices = new List<Vector2>() { new Vector2(0.0f, 0.5f), new Vector2(1.0f, 0.5f) };
+
+        VectorLine line;
+
+        public void Start()
+        {
+            line = new VectorLine("TrajectoryLine", vl_Vertices, 5.0f);
+            line.SetColor(Color.yellow);
+            line.useViewportCoords = true;
+
+            VectorLine.SetLine(Color.green, new Vector2(0, 0), new Vector2(Screen.width - 1,
+Screen.height - 1));
+        }
+
+        public void Update()
+        {
+            bool isViewport = line.useViewportCoords;
+            vl_Vertices.Clear();
+
+#if false
+            Vector2 v2;
+            foreach (var v in Vertices)
+            {
+                var v3 = FlightCamera.fetch.mainCamera.WorldToScreenPoint(v);
+                v2.x = v3.x;
+                v2.y = v3.x;
+                vl_Vertices.Add(v2);
+            }
+#endif
+
+            // line.Draw3D();
+            // line.Draw();
+        }
+
+        public void OnPreRender()
+        {
+            //VectorLine.SetCamera3D(FlightCamera.fetch.mainCamera);
+            //line.useViewportCoords = true;
+        }
 
         public void OnPostRender()
         {
