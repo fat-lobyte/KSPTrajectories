@@ -14,7 +14,7 @@ namespace Trajectories
 #if DEBUG_PROFILER
         // constants
         private const float width = 500.0f;
-        private const float height = 500.0f;
+        private const float height = 350.0f;
 
         private const float value_width = 65.0f;
 
@@ -66,6 +66,7 @@ namespace Trajectories
 
             // create window
             dialog_items = new DialogGUIVerticalLayout();
+
             multi_dialog = new MultiOptionDialog(
                "TrajectoriesProfilerWindow",
                "",
@@ -82,7 +83,7 @@ namespace Trajectories
                            new DialogGUIToggle(() => { return show_zero; },"Show zero calls", OnButtonClick_ShowZero),
                            new DialogGUILabel(() => { return tot_frames_txt; }, value_width + 50f)),
                        // create header line
-                       new DialogGUIHorizontalLayout(
+                       new DialogGUIHorizontalLayout(TextAnchor.UpperCenter,
                            new DialogGUILabel("<b>   NAME</b>", true),
                            new DialogGUILabel("<b>LAST</b>", value_width),
                            new DialogGUILabel("<b>AVG</b>", value_width),
@@ -127,8 +128,8 @@ namespace Trajectories
 
                 if (e.prev_calls > 0L)
                 {
-                    e.last_txt = Util.Microseconds(e.prev_time / e.prev_calls).ToString("F2") + "ms";
-                    e.calls_txt = e.prev_calls.ToString();
+                    e.last_txt = String.Format("{0,4:F2}ms", Util.Microseconds(e.prev_time / e.prev_calls));
+                    e.calls_txt = String.Format("{0,4:D}", e.prev_calls.ToString());
                 }
                 else if (show_zero)
                 {
@@ -136,8 +137,8 @@ namespace Trajectories
                     e.calls_txt = "0";
                 }
 
-                e.avg_txt = (e.tot_calls > 0L ? Util.Microseconds(e.tot_time / e.tot_calls).ToString("F2") : "") + "ms";
-                e.avg_calls_txt = tot_frames > 0L ? ((float)e.tot_calls / (float)tot_frames).ToString("F3") : "0";
+                e.avg_txt = String.Format("{0,4:F2}ms", (e.tot_calls > 0L ? Util.Microseconds(e.tot_time / e.tot_calls) : 0));
+                e.avg_calls_txt = String.Format("{0,6:F1}", (tot_frames > 0L ? ((float)e.tot_calls / (float)tot_frames) : 0));
             }
 
             tot_frames_txt = tot_frames.ToString() + " Frames";
@@ -203,9 +204,15 @@ namespace Trajectories
 
         private void AddDialogItem(string e_name)
         {
+
+            var label_last = new DialogGUILabel(() => { return entries[e_name].last_txt; }, value_width);
+            var label_avg = new DialogGUILabel(() => { return entries[e_name].avg_txt; }, value_width);
+            var label_calls = new DialogGUILabel(() => { return entries[e_name].calls_txt; }, value_width - 15f);
+            var label_avg_calls = new DialogGUILabel(() => { return entries[e_name].avg_calls_txt; }, value_width - 10f);
+
             // add item
             dialog_items.AddChild(
-                new DialogGUIHorizontalLayout(
+                new DialogGUIHorizontalLayout(TextAnchor.MiddleRight,
                     new DialogGUILabel("  " + e_name, true),
                     new DialogGUILabel(() => { return entries[e_name].last_txt; }, value_width),
                     new DialogGUILabel(() => { return entries[e_name].avg_txt; }, value_width),
@@ -216,6 +223,12 @@ namespace Trajectories
             Stack<Transform> stack = new Stack<Transform>();
             stack.Push(dialog_items.uiItem.gameObject.transform);
             dialog_items.children[dialog_items.children.Count - 1].Create(ref stack, HighLogic.UISkin);
+
+            // setting text alignment *after* gui creation
+            label_last.text.alignment = TMPro.TextAlignmentOptions.TopRight;
+            label_avg.text.alignment = TMPro.TextAlignmentOptions.TopRight;
+            label_calls.text.alignment = TMPro.TextAlignmentOptions.TopRight;
+            label_avg_calls.text.alignment = TMPro.TextAlignmentOptions.TopRight;
         }
 #endif
 
